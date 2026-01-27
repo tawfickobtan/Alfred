@@ -7,7 +7,9 @@ forbidden = [
     "llm.py",
     "README.MD",
     "tools.json",
-    "tools.py"
+    "tools.py",
+    ".gitignore",
+    "system_prompt.txt"
 ]
 
 def getItemsInPath(path):

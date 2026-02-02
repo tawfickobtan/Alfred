@@ -1,3 +1,4 @@
+import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
@@ -8,6 +9,8 @@ import tools
 import json
 import os
 from pathlib import Path
+from rich.console import Console
+
 baseDir = Path(__file__).resolve().parent
 
 # Load config file
@@ -26,9 +29,9 @@ with open(baseDir / "tools.json") as f:
 api_key = os.environ.get("GROQ_API_KEY","")
 
 custom_theme = Theme({
-    "markdown.h1": "bold white",
-    "markdown.h2": "bold green",
-    "markdown.h3": "bold yellow",
+    "markdown.h1": "Bold yellow",
+    "markdown.h2": "bold white",
+    "markdown.h3": "white",
 })
 
 console = Console(theme=custom_theme)
@@ -88,23 +91,19 @@ agent = Agent(
                 "\n\n" + "Current Items in Directory:\n" + tools.getItemsInPath(tools.getCurrentDirectory())
 )
 
-
-agentPanel = Panel("🤖 Alfred:",
-                     border_style="yellow",
-                     expand=False,
-                     style="bold white")
-
-UserPanel = Panel("💭 User:",
-                     border_style="yellow",
-                     expand=False,
-                     style="bold white")
-
-toolPanel = Text("🛠️ Executing: ",
-                     style="bold red")
-
-response = agent.complete()
-console.print(agentPanel)
-console.print(Markdown(response[0].content))
+with console.status("Loading...", spinner="dots"):
+    try:
+        response = agent.complete()
+    except Exception as e:
+        raise e
+textResponse = response[0].content
+responsePanel = Panel(
+    Markdown(textResponse),
+    border_style="bold blue",
+    title="Response:",
+    expand=False,
+)
+console.print(responsePanel)
 console.print(Markdown("---"))
 
 while True:
@@ -112,13 +111,12 @@ while True:
     userInput = input()
     console.print(Markdown("---"))
     agent.add_message("user", userInput)
-    console.print(agentPanel)
     while True:
-        try:
-            response = agent.complete()
-        except Exception as e:
-            raise e
-
+        with console.status("Thinking...", spinner="dots"):
+            try:
+                response = agent.complete()
+            except Exception as e:
+                raise e
         if len(response) > 1:
             tool_call = response[0].tool_calls[0]
             id = tool_call.id
@@ -143,7 +141,13 @@ while True:
             console.print(toolPanel)
             print()
         else:
-            console.print(Text("Response:", style="bold blue"))
-            console.print(Markdown(response[0].content))
+            textResponse = response[0].content
+            responsePanel = Panel(
+                Markdown(textResponse),
+                border_style="bold blue",
+                title="Response:",
+                expand=False,
+            )
+            console.print(responsePanel)
             console.print(Markdown("---"))
             break

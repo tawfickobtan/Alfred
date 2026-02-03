@@ -94,10 +94,11 @@ agent = Agent(
     toolsDesc=tooling,
     function_registry=functionRegistry,
     system_prompt=systemPrompt +"\n\n" + "Current Directory: " + tools.getCurrentDirectory() +
-                "\n\n" + "Current Items in Directory:\n" + tools.getItemsInPath(tools.getCurrentDirectory() +
+                "\n\n" + "Current Items in Directory:\n" + tools.getItemsInPath(tools.getCurrentDirectory()) +
                 "\n\n" + "Your memory storage contains the following facts:\n" + tools.listMemories() +
-                "\n" + "use the rememberFact, recallFact, forgetFact, and listMemories tools to manage your memory. Whenever a fact is worth remembering for future interactions, use the rememberFact tool to store it. Try to utilise your memory as much as possible to make interactions more personalised and effective. Try to make conversations as personal as possible based on your remembered facts."),
-)
+                "\n" + "use the rememberFact, recallFact, forgetFact, and listMemories tools to manage your memory. Whenever a fact is worth remembering for future interactions, use the rememberFact tool to store it. Try to utilise your memory as much as possible to make interactions more personalised and effective. Try to make conversations as personal as possible based on your remembered facts."
+                )
+
 
 with console.status("Loading...", spinner="dots"):
     try:
@@ -105,7 +106,6 @@ with console.status("Loading...", spinner="dots"):
     except Exception as e:
         raise e
 textResponse = response[0].content
-print(textResponse)
 console.print(Markdown(textResponse))
 console.print(Markdown("---"))
 

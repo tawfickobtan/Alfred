@@ -1,95 +1,106 @@
 # Newton 🍎
 
-**Local AI Agent with Semantic Memory**
+**Local AI Agent for File Management**
 
-Newton is your personal AI assistant that runs on your computer. It manages your files, automates tasks, and actually remembers what you tell it - not just for one conversation, but across all your sessions.
+Newton is your personal AI assistant that runs on your computer. It manages your files, automates tasks, and remembers what you tell it across all your sessions. Features a beautiful terminal UI built with Rich.
 
 ---
 
 ## What Newton Does
 
-**Manages Your Files**
-- Organizes directories and finds files instantly
-- Creates, reads, edits, and moves files through conversation
-- Lists directory contents and checks file properties
-- Handles all file operations without touching your mouse
+**Comprehensive File Management**
+- Create, read, write, delete, and move files through conversation
+- Copy and move multiple files at once with batch operations
+- Read specific lines from large files with `readFileLines`
+- Get directory trees with customizable depth
+- Rename and check file existence and sizes
+- List directory contents instantly
 
-**Remembers Everything**
-- Stores facts you tell it (your preferences, project names, important info)
-- Searches through past conversations semantically - just ask "what did I mention about X?"
-- Builds a knowledge base from your interactions over time
-- Recalls context from weeks ago when you need it
+**Smart Memory System**
+- Key-value memory storage for user preferences and important facts
+- `rememberFact`, `recallFact`, `forgetFact`, `listMemories` tools
+- Persistent across sessions - stored locally in JSON format
+- Perfect for remembering project names, preferences, and context
 
-**Automates Your Work**
-- Executes multi-step tasks through simple requests
-- Runs terminal commands (with your approval for safety)
-- Chains operations together - "organize these files AND create a summary"
-- Handles repetitive tasks so you don't have to
+**Beautiful Terminal UI**
+- Rich console interface with ASCII art branding
+- Tool execution panels showing parameters and results  
+- Real-time status indicators ("Thinking...", "Loading...")
+- Markdown rendering for agent responses
+- Color-coded output for better readability
 
-**Stays Private**
+**Built for Privacy**
 - Everything runs on your local machine
 - Your files never leave your computer
-- Conversations stored locally, not in the cloud
-- You own all your data
+- All data stored locally, not in the cloud
+- You own all your data and conversations
 
 ---
 
-## Setup
+## Quick Start
 
-**1. Get Python 3.8+** (if you don't have it already)
+**1. Requirements**
+- Python 3.8+
+- GROQ API key (get one at [groq.com](https://groq.com))
 
-**2. Download Newton**
+**2. Installation**
 ```bash
-git clone https://github.com/yourusername/Newton.git
+git clone https://github.com/tawfickobtan/Newton
 cd Newton
-```
-
-**3. Install**
-```bash
 pip install -r requirements.txt
 ```
 
-**4. Add your API key**
+**3. Configuration**
+Set your API key:
 ```bash
 # Windows PowerShell
-$env:GROQ_API_KEY="your-key-here"
+$env:GROQ_API_KEY="your-groq-api-key"
 
 # Mac/Linux
-export GROQ_API_KEY="your-key-here"
+export GROQ_API_KEY="your-groq-api-key"
+
+# CMD
+setx GROQ_API_KEY "your-groq-api-key"
 ```
 
-**5. Run**
+Edit `configuration/config.json` to change the model or settings.
+
+**4. Run Newton**
 ```bash
 python newton.py
 ```
 
 ---
 
-## Example Conversations
+## Why Newton?
 
-**"Create a folder called 'Projects' and list everything in my current directory"**  
-→ Newton creates the folder and shows you all your files
-
-**"Remember that I prefer Python for scripting tasks"**  
-→ Newton stores this fact for future reference
-
-**"What did we talk about regarding my project last week?"**  
-→ Newton searches its memory and recalls the relevant details
-
-**"Move all my .txt files into a 'Documents' folder"**  
-→ Newton organizes your files automatically
-
-**"Run 'git status' and tell me what it says"**  
-→ Newton executes the command and shows you the output
+✅ **Persistent Memory** - Remembers facts across sessions  
+✅ **Local & Private** - All data stays on your machine  
+✅ **Action-Oriented** - Does the work, not just advises  
+✅ **Beautiful UI** - Rich terminal interface with panels and colors  
+✅ **Batch Operations** - Move/copy multiple files at once  
+✅ **Safe by Design** - Protected files prevent accidental modifications
 
 ---
 
-## Why Use Newton?
+## Available Tools
 
-**It actually remembers** - Unlike ChatGPT, Newton recalls your past conversations  
-**It's your machine** - All your data stays local and private  
-**It takes action** - Doesn't just advise, it does the work  
-**It learns you** - Builds a knowledge base about your preferences over time
+### File Operations
+- `createFile`, `writeIntoFile`, `readFile`, `readFileLines`
+- `delete`, `moveFile`, `copyFile`, `renameFile`  
+- `moveMultipleFiles`, `copyMultipleFiles` (batch operations)
+- `fileExists`, `getFileSize`
+
+### Directory Operations  
+- `createDirectory`, `deleteDirectory`
+- `getItemsInPath`, `getCurrentDirectory`
+- `getDirectoryTree` (visualize folder structure with depth control)
+
+### Memory Management
+- `rememberFact` - Store key-value pairs persistently
+- `recallFact` - Retrieve stored information
+- `forgetFact` - Delete specific memories
+- `listMemories` - View all stored facts
 
 ---
 
@@ -97,24 +108,66 @@ python newton.py
 
 ```
 Newton/
+├── newton.py             # Main entry point with Rich UI
+├── requirements.txt      # Python dependencies
+├── README.md            # Documentation
 ├── agent/
-│   └── agent.py          # Core agent logic and tool calling
-│   └── tools.py          # All tool implementations
-│   └── tools.json        # Tool definitions
+│   ├── agent.py         # Core Agent class with tool calling
+│   ├── tools.py         # Tool implementations
+│   └── tools.json       # Tool definitions for function calling
 ├── configuration/
-│   ├── AGENT.md          # System prompt
-│   ├── config.json       # Model configuration
-├── memory/
-│   ├── memory.json       # Key-value memory storage
-│   ├── vector_memory.json
-│   └── vector_embeddings.json
-├── newton.py             # Main entry point
-└── requirements.txt      # Dependencies
-└── README.md             # This file 😁
-
+│   ├── config.json      # Model and API configuration
+│   └── AGENT.md         # System prompt and personality
+└── memory/
+    └── memory.json      # Persistent key-value storage
 ```
 
 ---
+
+## Technical Details
+
+**Architecture:**
+- Built on OpenAI-compatible API format (via GROQ)
+- Function calling with automatic tool execution
+- Rich console library for beautiful terminal UI
+- JSON-based configuration and memory storage
+
+**Model:** Default is `openai/gpt-oss-120b` (configurable in config.json)
+
+**Dependencies:**
+- `openai>=1.0.0` - API client
+- `rich>=13.0.0` - Terminal UI
+- `requests>=2.31.0` - HTTP requests  
+- `sentence-transformers` - Text processing
+- `numpy` - Numerical operations
+
+**Protected Files:**  
+Newton won't modify these critical files: `agent.py`, `tools.py`, `tools.json`, `config.json`, `AGENT.md`, `requirements.txt`, `.gitignore`
+
+---
+
+## Configuration
+
+Edit `configuration/config.json`:
+```json
+{
+  "base_url": "https://api.groq.com/openai/v1",
+  "model": "openai/gpt-oss-120b",
+  "version": "1.0.1"
+}
+```
+
+Customize the agent personality in `configuration/AGENT.md` to change how Newton responds and behaves.
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to:
+- Report bugs and issues
+- Suggest new tools or features
+- Improve documentation
+- Submit pull requests
 
 💼 [Check out my LinkedIn](https://www.linkedin.com/in/tawfic-kobtan) for more projects and updates!
 
